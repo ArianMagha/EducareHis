@@ -111,4 +111,41 @@ window.onload = () => {
     usuarioLogado = JSON.parse(user);
     iniciarApp();
   }
+
+function alterarSenha(){
+
+  const senhaAtual = document.getElementById("senhaAtual").value;
+  const novaSenha = document.getElementById("novaSenha").value;
+  const confirmarSenha = document.getElementById("confirmarSenha").value;
+
+  // valida senha atual
+  if(senhaAtual !== usuarioLogado.senha){
+    alert("Senha atual incorreta");
+    return;
+  }
+
+  // valida nova senha
+  if(novaSenha.length < 4){
+    alert("A nova senha deve ter pelo menos 4 caracteres");
+    return;
+  }
+
+  if(novaSenha !== confirmarSenha){
+    alert("As senhas não coincidem");
+    return;
+  }
+
+  // atualiza no usuário logado
+  usuarioLogado.senha = novaSenha;
+
+  // atualiza no localStorage
+  localStorage.setItem("user", JSON.stringify(usuarioLogado));
+
+  alert("Senha alterada com sucesso!");
+
+  // limpa campos
+  document.getElementById("senhaAtual").value = "";
+  document.getElementById("novaSenha").value = "";
+  document.getElementById("confirmarSenha").value = "";
+}
 };
