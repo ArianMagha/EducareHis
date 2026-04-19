@@ -1,0 +1,40 @@
+{
+  "usuarios": [
+    {
+      "id": 1,
+      "nome": "Adrian",
+      "email": "admin@admin.com",
+      "senha": "123456",
+      "progresso": 30,
+      "cursosConcluidos": 1
+    }
+  ],
+  "cursos": [
+    {
+      "id": 1,
+      "titulo": "Introdução à História",
+      "descricao": "Fundamentos da História Moderna",
+      "video": "https://www.youtube.com/embed/8J4Z3n4Zz3M",
+      "atividades": [
+        {
+          "pergunta": "O que estuda a História?",
+          "opcoes": ["Passado humano", "Matemática", "Física"],
+          "resposta": 0
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "titulo": "Sociologia Básica",
+      "descricao": "Introdução à sociedade e cultura",
+      "video": "https://www.youtube.com/embed/VIDEO_ID",
+      "atividades": [
+        {
+          "pergunta": "Quem é considerado pai da Sociologia?",
+          "opcoes": ["Durkheim", "Newton", "Darwin"],
+          "resposta": 0
+        }
+      ]
+    }
+  ]
+}

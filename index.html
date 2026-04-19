@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Plataforma</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div id="login">
+  <h2>Login</h2>
+  <input id="email" placeholder="Email">
+  <input id="senha" type="password" placeholder="Senha">
+  <button onclick="login()">Entrar</button>
+</div>
+
+<div id="app" style="display:none">
+
+  <div class="sidebar">
+    <button onclick="mostrar('menu')">Menu</button>
+    <button onclick="mostrar('cursos')">Cursos</button>
+    <button onclick="mostrar('perfil')">Perfil</button>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <div class="conteudo">
+
+    <div id="menu">
+      <h2>Dashboard</h2>
+      <p id="progresso"></p>
+      <p id="concluidos"></p>
+    </div>
+
+    <div id="cursos" style="display:none"></div>
+
+    <div id="perfil" style="display:none">
+      <h2>Perfil</h2>
+      <p id="nomeUser"></p>
+      <p id="emailUser"></p>
+    </div>
+
+  </div>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
