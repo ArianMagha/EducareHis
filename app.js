@@ -10,7 +10,7 @@ const SUPABASE_KEY = "sb_publishable_1HjiNJRF1_0STvMiCP0DZA_TAwVblIR";
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // =========================
-// CARREGAR CURSOS DO db.json
+// CARREGAR CURSOS
 // =========================
 async function carregarBanco() {
   try {
@@ -23,7 +23,7 @@ async function carregarBanco() {
 }
 
 // =========================
-// MOSTRAR TELAS LOGIN/CADASTRO
+// TELAS LOGIN/CADASTRO
 // =========================
 function mostrarCadastro() {
   document.getElementById("telaLogin").style.display = "none";
@@ -36,10 +36,43 @@ function voltarLogin() {
 }
 
 // =========================
+// SOLICITAR CADASTRO
+// =========================
+async function cadastrar() {
+  const nome = document.getElementById("nomeCadastro").value.trim();
+  const email = document.getElementById("emailCadastro").value.trim().toLowerCase();
+
+  if (!nome || !email) {
+    alert("Preencha nome e email");
+    return;
+  }
+
+  const { error } = await supabaseClient
+    .from("solicitacoes_cadastro")
+    .insert([
+      {
+        nome: nome,
+        email: email,
+        status: "pendente"
+      }
+    ]);
+
+  if (error) {
+    alert("Erro ao enviar solicitação: " + error.message);
+    return;
+  }
+
+  alert("Solicitação enviada com sucesso! Aguarde sua aprovação.");
+  document.getElementById("nomeCadastro").value = "";
+  document.getElementById("emailCadastro").value = "";
+  voltarLogin();
+}
+
+// =========================
 // LOGIN
 // =========================
 async function login() {
-  const email = document.getElementById("email").value.trim();
+  const email = document.getElementById("email").value.trim().toLowerCase();
   const senha = document.getElementById("senha").value.trim();
 
   if (!email || !senha) {
@@ -61,63 +94,13 @@ async function login() {
 
   if (usuarioLogado) {
     iniciarApp();
+
+    if (usuarioLogado.primeiroAcesso) {
+      mostrar("perfil");
+      bloquearPrimeiroAcesso();
+      alert("No primeiro acesso é obrigatório alterar a senha.");
+    }
   }
-}
-
-// =========================
-// CADASTRO
-// =========================
-async function cadastrar() {
-  const nome = document.getElementById("nomeCadastro").value.trim();
-  const email = document.getElementById("emailCadastro").value.trim();
-  const senha = document.getElementById("senhaCadastro").value.trim();
-
-  if (!nome || !email || !senha) {
-    alert("Preencha nome, email e senha");
-    return;
-  }
-
-  if (senha.length < 6) {
-    alert("A senha deve ter pelo menos 6 caracteres");
-    return;
-  }
-
-  const { data, error } = await supabaseClient.auth.signUp({
-    email,
-    password: senha
-  });
-
-  if (error) {
-    alert("Erro ao cadastrar: " + error.message);
-    return;
-  }
-
-  const user = data.user;
-
-  if (!user) {
-    alert("Conta criada. Verifique seu email para confirmar o cadastro.");
-    return;
-  }
-
-  const { error: insertError } = await supabaseClient
-    .from("profiles")
-    .insert([
-      {
-        id: user.id,
-        nome: nome,
-        email: email,
-        progresso: 0,
-        cursos_concluidos: 0
-      }
-    ]);
-
-  if (insertError) {
-    alert("Conta criada, mas houve erro ao salvar perfil: " + insertError.message);
-    return;
-  }
-
-  alert("Conta criada com sucesso!");
-  voltarLogin();
 }
 
 // =========================
@@ -141,7 +124,8 @@ async function carregarUsuarioLogado(userAuth) {
     nome: data.nome || "",
     email: data.email || userAuth.email || "",
     progresso: data.progresso || 0,
-    cursosConcluidos: data.cursos_concluidos || 0
+    cursosConcluidos: data.cursos_concluidos || 0,
+    primeiroAcesso: data.primeiro_acesso === true
   };
 }
 
@@ -157,7 +141,25 @@ function iniciarApp() {
 
   atualizarDashboard();
   carregarCursos();
-  mostrar("menu");
+
+  if (usuarioLogado.primeiroAcesso) {
+    mostrar("perfil");
+    bloquearPrimeiroAcesso();
+  } else {
+    liberarSistema();
+    mostrar("menu");
+  }
+}
+
+// =========================
+// BLOQUEIO DE PRIMEIRO ACESSO
+// =========================
+function bloquearPrimeiroAcesso() {
+  document.getElementById("avisoPrimeiroAcesso").style.display = "block";
+}
+
+function liberarSistema() {
+  document.getElementById("avisoPrimeiroAcesso").style.display = "none";
 }
 
 // =========================
@@ -221,6 +223,12 @@ function carregarCursos() {
 // ATIVIDADE
 // =========================
 async function fazerAtividade(cursoId, moduloId, materiaId) {
+  if (usuarioLogado.primeiroAcesso) {
+    alert("Antes de continuar, altere sua senha no perfil.");
+    mostrar("perfil");
+    return;
+  }
+
   const curso = db.cursos.find(c => c.id == cursoId);
   if (!curso) return;
 
@@ -269,6 +277,11 @@ async function fazerAtividade(cursoId, moduloId, materiaId) {
 // MENU
 // =========================
 function mostrar(sec) {
+  if (usuarioLogado && usuarioLogado.primeiroAcesso && sec !== "perfil") {
+    alert("No primeiro acesso você precisa alterar sua senha.");
+    sec = "perfil";
+  }
+
   document.getElementById("menu").style.display = "none";
   document.getElementById("cursos").style.display = "none";
   document.getElementById("perfil").style.display = "none";
@@ -318,11 +331,30 @@ async function alterarSenha() {
     return;
   }
 
+  if (usuarioLogado.primeiroAcesso) {
+    const { error: profileError } = await supabaseClient
+      .from("profiles")
+      .update({
+        primeiro_acesso: false
+      })
+      .eq("id", usuarioLogado.id);
+
+    if (profileError) {
+      alert("Senha alterada, mas houve erro ao liberar acesso: " + profileError.message);
+      return;
+    }
+
+    usuarioLogado.primeiroAcesso = false;
+    liberarSistema();
+  }
+
   alert("Senha alterada com sucesso!");
 
   document.getElementById("senhaAtual").value = "";
   document.getElementById("novaSenha").value = "";
   document.getElementById("confirmarSenha").value = "";
+
+  mostrar("menu");
 }
 
 // =========================
