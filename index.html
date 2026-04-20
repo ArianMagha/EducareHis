@@ -8,10 +8,9 @@
 </head>
 <body>
 
-  <!-- LOGIN / CADASTRO -->
-  <div id="login" class="authScreen">
+  <div id="login">
 
-    <div class="authBox" id="telaLogin">
+    <div class="login-box" id="telaLogin">
       <h2>Entrar na Plataforma</h2>
       <p class="subtexto">Acesse sua trilha de aprendizagem</p>
 
@@ -26,7 +25,7 @@
       </p>
     </div>
 
-    <div class="authBox" id="telaCadastro" style="display:none;">
+    <div class="login-box" id="telaCadastro" style="display:none;">
       <h2>Solicitar Cadastro</h2>
       <p class="subtexto">Envie seus dados para aprovação</p>
 
@@ -43,106 +42,42 @@
 
   </div>
 
-  <!-- APP -->
   <div id="app" style="display:none;">
 
-    <aside class="sidebar">
-      <div class="sidebarTop">
+    <div class="sidebar">
+      <button onclick="mostrar('menu')">Menu</button>
+      <button onclick="mostrar('cursos')">Cursos</button>
+      <button onclick="mostrar('perfil')">Perfil</button>
+      <button onclick="logout()">Logout</button>
+    </div>
 
-        <button class="sideBtn active" id="btnMenu" title="Menu" onclick="mostrar('menu')">
-          <svg fill="none" viewBox="0 0 24 24" stroke-width="2">
-            <path d="M3 10.5 12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>
-          </svg>
-        </button>
+    <div class="conteudo">
 
-        <button class="sideBtn" id="btnCursos" title="Cursos" onclick="mostrar('cursos')">
-          <svg fill="none" viewBox="0 0 24 24" stroke-width="2">
-            <path d="M4 5a2 2 0 0 1 2-2h12v18H6a2 2 0 0 0-2 2z"/>
-            <path d="M18 3a2 2 0 0 1 2 2v18"/>
-          </svg>
-        </button>
-
-        <button class="sideBtn" id="btnPerfil" title="Perfil" onclick="mostrar('perfil')">
-          <svg fill="none" viewBox="0 0 24 24" stroke-width="2">
-            <path d="M20 21a8 8 0 1 0-16 0"/>
-            <circle cx="12" cy="7" r="4"/>
-          </svg>
-        </button>
-
+      <div id="menu">
+        <h2>Dashboard</h2>
+        <p id="progresso"></p>
+        <p id="concluidos"></p>
       </div>
 
-      <div class="sidebarBottom">
-        <button class="sideBtn logoutBtn" title="Logout" onclick="logout()">
-          <svg fill="none" viewBox="0 0 24 24" stroke-width="2">
-            <path d="M10 17l5-5-5-5"/>
-            <path d="M15 12H3"/>
-            <path d="M21 3v18"/>
-          </svg>
-        </button>
+      <div id="cursos" style="display:none;"></div>
+
+      <div id="perfil" style="display:none;">
+        <h2>Perfil</h2>
+        <p><strong>Nome:</strong> <span id="nomeUser"></span></p>
+        <p><strong>Email:</strong> <span id="emailUser"></span></p>
+
+        <div id="avisoPrimeiroAcesso" class="aviso-primeiro-acesso" style="display:none;">
+          Primeiro acesso detectado. Você precisa alterar sua senha para continuar.
+        </div>
+
+        <h3>Alterar Senha</h3>
+        <input id="senhaAtual" type="password" placeholder="Senha atual">
+        <input id="novaSenha" type="password" placeholder="Nova senha">
+        <input id="confirmarSenha" type="password" placeholder="Confirmar nova senha">
+        <button onclick="alterarSenha()">Alterar Senha</button>
       </div>
-    </aside>
 
-    <main class="main">
-
-      <!-- MENU / DASHBOARD -->
-      <section id="menu" class="screen active">
-        <h1 class="sectionTitle">Dashboard de progresso</h1>
-
-        <div class="dashboardGrid">
-          <div class="card dashboardCard">
-            <h3>Progresso</h3>
-            <div class="bigText" id="progresso">0%</div>
-            <p>Acompanhe sua evolução dentro da plataforma.</p>
-          </div>
-
-          <div class="card dashboardCard">
-            <h3>Cursos concluídos</h3>
-            <div class="bigText" id="concluidos">0</div>
-            <p>Resumo rápido do seu desempenho.</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- CURSOS -->
-      <section id="cursos" class="screen" style="display:none;">
-        <h1 class="sectionTitle">Cursos</h1>
-        <div class="coursesArea" id="cursosLista">
-          <!-- app.js renderiza os cards aqui -->
-        </div>
-      </section>
-
-      <!-- PERFIL -->
-      <section id="perfil" class="screen" style="display:none;">
-        <h1 class="sectionTitle">Perfil</h1>
-
-        <div class="card profileCard">
-          <div class="profileRow">
-            <div class="profileLabel">Nome</div>
-            <div class="profileValue"><span id="nomeUser"></span></div>
-          </div>
-
-          <div class="profileRow">
-            <div class="profileLabel">Email</div>
-            <div class="profileValue"><span id="emailUser"></span></div>
-          </div>
-
-          <div id="avisoPrimeiroAcesso" class="aviso-primeiro-acesso" style="display:none;">
-            Primeiro acesso detectado. Você precisa alterar sua senha para continuar.
-          </div>
-
-          <div class="senhaBox">
-            <h3>Alterar Senha</h3>
-
-            <input id="senhaAtual" type="password" placeholder="Senha atual">
-            <input id="novaSenha" type="password" placeholder="Nova senha">
-            <input id="confirmarSenha" type="password" placeholder="Confirmar nova senha">
-
-            <button class="primaryBtn" onclick="alterarSenha()">Alterar Senha</button>
-          </div>
-        </div>
-      </section>
-
-    </main>
+    </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
