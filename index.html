@@ -1,58 +1,55 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<title>Plataforma</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>Plataforma</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-<div id="login">
-  <h2>Login</h2>
-  <input id="email" placeholder="Email">
-  <input id="senha" type="password" placeholder="Senha">
-  <button onclick="login()">Entrar</button>
-</div>
-
-<div id="app" style="display:none">
-
-  <div class="sidebar">
-    <button onclick="mostrar('menu')">Menu</button>
-    <button onclick="mostrar('cursos')">Cursos</button>
-    <button onclick="mostrar('perfil')">Perfil</button>
-    <button onclick="logout()">Logout</button>
+  <div id="login">
+    <h2>Login</h2>
+    <input id="email" type="email" placeholder="Email">
+    <input id="senha" type="password" placeholder="Senha">
+    <button onclick="login()">Entrar</button>
   </div>
 
-  <div class="conteudo">
+  <div id="app" style="display:none">
 
-    <div id="menu">
-      <h2>Dashboard</h2>
-      <p id="progresso"></p>
-      <p id="concluidos"></p>
+    <div class="sidebar">
+      <button onclick="mostrar('menu')">Menu</button>
+      <button onclick="mostrar('cursos')">Cursos</button>
+      <button onclick="mostrar('perfil')">Perfil</button>
+      <button onclick="logout()">Logout</button>
     </div>
 
-    <div id="cursos" style="display:none"></div>
+    <div class="conteudo">
 
-    <div id="perfil" style="display:none">
-      <h2>Perfil</h2>
-      <p id="nomeUser"></p>
-      <p id="emailUser"></p>
+      <div id="menu">
+        <h2>Dashboard</h2>
+        <p id="progresso"></p>
+        <p id="concluidos"></p>
+      </div>
+
+      <div id="cursos" style="display:none"></div>
+
+      <div id="perfil" style="display:none">
+        <h2>Perfil</h2>
+        <p id="nomeUser"></p>
+        <p id="emailUser"></p>
+
+        <h3>Alterar Senha</h3>
+        <input id="senhaAtual" type="password" placeholder="Senha atual">
+        <input id="novaSenha" type="password" placeholder="Nova senha">
+        <input id="confirmarSenha" type="password" placeholder="Confirmar nova senha">
+        <button onclick="alterarSenha()">Alterar Senha</button>
+      </div>
+
     </div>
-
-    <h3>Alterar Senha</h3>
-
-   <input id="senhaAtual" type="password" placeholder="Senha atual">
-   <input id="novaSenha" type="password" placeholder="Nova senha">
-   <input id="confirmarSenha" type="password" placeholder="Confirmar nova senha">
-
-<button onclick="alterarSenha()">Alterar Senha</button>
   </div>
 
-</div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="app.js"></script>
 
-  <script src="https://enkwyjpiyfvseooczpzd.supabase.co/rest/v1/"></script>
-<script src="app.js"></script>
-  
 </body>
 </html>
