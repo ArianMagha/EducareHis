@@ -5,7 +5,7 @@ let usuarioLogado = null;
 // SUPABASE
 // =========================
 const SUPABASE_URL = "https://enkwyjpiyfvseooczpzd.supabase.co";
-const SUPABASE_KEY = "SUA_CHAVE_PUBLICA_AQUI";
+const SUPABASE_KEY = "sb_publishable_1HjiNJRF1_0STvMiCP0DZA_TAwVblIR";
 
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
@@ -20,6 +20,19 @@ async function carregarBanco() {
     console.error("Erro ao carregar db.json:", error);
     db = { cursos: [] };
   }
+}
+
+// =========================
+// MOSTRAR TELAS LOGIN/CADASTRO
+// =========================
+function mostrarCadastro() {
+  document.getElementById("telaLogin").style.display = "none";
+  document.getElementById("telaCadastro").style.display = "block";
+}
+
+function voltarLogin() {
+  document.getElementById("telaCadastro").style.display = "none";
+  document.getElementById("telaLogin").style.display = "block";
 }
 
 // =========================
@@ -45,7 +58,10 @@ async function login() {
   }
 
   await carregarUsuarioLogado(data.user);
-  iniciarApp();
+
+  if (usuarioLogado) {
+    iniciarApp();
+  }
 }
 
 // =========================
@@ -58,6 +74,11 @@ async function cadastrar() {
 
   if (!nome || !email || !senha) {
     alert("Preencha nome, email e senha");
+    return;
+  }
+
+  if (senha.length < 6) {
+    alert("A senha deve ter pelo menos 6 caracteres");
     return;
   }
 
@@ -74,7 +95,7 @@ async function cadastrar() {
   const user = data.user;
 
   if (!user) {
-    alert("Cadastro realizado. Verifique seu email para confirmar a conta.");
+    alert("Conta criada. Verifique seu email para confirmar o cadastro.");
     return;
   }
 
@@ -91,15 +112,16 @@ async function cadastrar() {
     ]);
 
   if (insertError) {
-    alert("Usuário criado, mas houve erro ao salvar perfil: " + insertError.message);
+    alert("Conta criada, mas houve erro ao salvar perfil: " + insertError.message);
     return;
   }
 
   alert("Conta criada com sucesso!");
+  voltarLogin();
 }
 
 // =========================
-// CARREGAR PERFIL DO USUÁRIO
+// CARREGAR PERFIL
 // =========================
 async function carregarUsuarioLogado(userAuth) {
   const { data, error } = await supabaseClient
@@ -150,7 +172,7 @@ function atualizarDashboard() {
 }
 
 // =========================
-// CURSOS
+// CURSOS EM TRILHA
 // =========================
 function carregarCursos() {
   const div = document.getElementById("cursos");
@@ -162,29 +184,56 @@ function carregarCursos() {
   }
 
   db.cursos.forEach(curso => {
-    div.innerHTML += `
+    let html = `
       <div class="card">
-        <h3>${curso.titulo}</h3>
+        <h2>${curso.titulo}</h2>
         <p>${curso.descricao}</p>
-        <iframe src="${curso.video}" width="100%" height="200" allowfullscreen></iframe>
-        <button onclick="fazerAtividade(${curso.id})">Atividade</button>
-      </div>
     `;
+
+    curso.modulos.forEach(modulo => {
+      html += `
+        <div class="modulo">
+          <h3>${modulo.nome}</h3>
+      `;
+
+      modulo.materias.forEach(materia => {
+        html += `
+          <div class="materia">
+            <h4>${materia.titulo}</h4>
+            <p>${materia.descricao}</p>
+            <iframe src="${materia.video}" allowfullscreen></iframe>
+            <button onclick="fazerAtividade(${curso.id}, ${modulo.id}, ${materia.id})">
+              Fazer Atividade
+            </button>
+          </div>
+        `;
+      });
+
+      html += `</div>`;
+    });
+
+    html += `</div>`;
+    div.innerHTML += html;
   });
 }
 
 // =========================
 // ATIVIDADE
 // =========================
-async function fazerAtividade(id) {
-  const curso = db.cursos.find(c => c.id == id);
+async function fazerAtividade(cursoId, moduloId, materiaId) {
+  const curso = db.cursos.find(c => c.id == cursoId);
+  if (!curso) return;
 
-  if (!curso || !curso.atividades || curso.atividades.length === 0) {
-    alert("Este curso não possui atividade.");
+  const modulo = curso.modulos.find(m => m.id == moduloId);
+  if (!modulo) return;
+
+  const materia = modulo.materias.find(m => m.id == materiaId);
+  if (!materia || !materia.atividades || materia.atividades.length === 0) {
+    alert("Esta matéria não possui atividade.");
     return;
   }
 
-  const atividade = curso.atividades[0];
+  const atividade = materia.atividades[0];
 
   let resposta = prompt(
     atividade.pergunta + "\n" +
@@ -194,7 +243,7 @@ async function fazerAtividade(id) {
   if (resposta == atividade.resposta) {
     alert("Correto!");
 
-    usuarioLogado.progresso += 10;
+    usuarioLogado.progresso += 5;
     usuarioLogado.cursosConcluidos += 1;
 
     const { error } = await supabaseClient
@@ -250,7 +299,6 @@ async function alterarSenha() {
     return;
   }
 
-  // revalida a senha atual fazendo login novamente
   const { error: loginError } = await supabaseClient.auth.signInWithPassword({
     email: usuarioLogado.email,
     password: senhaAtual
