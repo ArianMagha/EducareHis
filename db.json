@@ -19,45 +19,51 @@
                   "pergunta": "O que estuda a História?",
                   "opcoes": ["Passado humano", "Matemática", "Física"],
                   "resposta": 0
-                },
-                {
+                }
+              ]
+            },
+            {
               "id": 2,
               "titulo": "Tempo histórico",
               "descricao": "Noções de tempo, cronologia e periodização.",
-              "video": "https://www.youtube.com/embed/8J4Z3n4Zz3M"
-            }
-          ]
-        },
-         {
-      "id": 2,
-      "titulo": "Introdução à História",
-      "descricao": "Fundamentos da História Moderna e processos históricos.",
-      "modulos": [
-        {
-          "id": 1,
-          "nome": "Módulo 2 - Fundamentos",
-          "materias": [
-            {
-              "id": 1,
-              "titulo": "O que é História?",
-              "descricao": "Entendimento inicial sobre o estudo da História.",
-              "video": "https://www.youtube.com/embed/8J4Z3n4Zz3M"
-            },
-            {
-              "id": 1,
-              "titulo": "O que é História?",
-              "descricao": "Entendimento inicial sobre o estudo da História.",
               "video": "https://www.youtube.com/embed/8J4Z3n4Zz3M",
               "atividades": [
                 {
-                  "pergunta": "O que estuda a História?",
-                  "opcoes": ["Passado humano", "Matemática", "Física"],
+                  "pergunta": "O que é periodização?",
+                  "opcoes": ["Dividir o tempo em períodos", "Ignorar datas", "Apagar fatos"],
                   "resposta": 0
-                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "titulo": "História do Brasil",
+      "descricao": "Panorama introdutório da formação histórica brasileira.",
+      "modulos": [
+        {
+          "id": 1,
+          "nome": "Módulo 1 - Brasil Colonial",
+          "materias": [
+            {
+              "id": 1,
+              "titulo": "Primeiros contatos",
+              "descricao": "Contexto dos primeiros contatos entre europeus e povos originários.",
+              "video": "https://www.youtube.com/embed/8J4Z3n4Zz3M",
+              "atividades": [
+                {
+                  "pergunta": "Qual período é estudado no Brasil Colonial?",
+                  "opcoes": ["Colonização portuguesa", "República", "Ditadura militar"],
+                  "resposta": 0
+                }
+              ]
+            }
           ]
         }
       ]
     }
   ]
 }
-            
