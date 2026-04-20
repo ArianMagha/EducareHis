@@ -16,51 +16,77 @@ body{
   width:100%;
   min-height:100vh;
   display:flex;
-  flex-direction:column;
   justify-content:center;
   align-items:center;
-  gap:15px;
-  background: linear-gradient(135deg, #0f172a, #1d4ed8, #2563eb);
   padding:20px;
+  background: linear-gradient(135deg, #0f172a, #1d4ed8, #2563eb);
 }
 
-#login h2{
-  color:white;
-  font-size:32px;
-  margin-bottom:10px;
-  font-weight:700;
-}
-
-#login input{
+.login-box{
   width:100%;
-  max-width:360px;
+  max-width:400px;
+  background:rgba(255,255,255,0.98);
+  padding:32px;
+  border-radius:24px;
+  box-shadow:0 20px 45px rgba(0,0,0,0.18);
+}
+
+.login-box h2{
+  font-size:30px;
+  color:#0f172a;
+  margin-bottom:8px;
+  text-align:center;
+}
+
+.subtexto{
+  text-align:center;
+  color:#64748b;
+  margin-bottom:22px;
+}
+
+.login-box input{
+  width:100%;
   padding:14px 16px;
-  border:none;
+  margin-bottom:14px;
+  border:1px solid #cbd5e1;
   border-radius:14px;
   outline:none;
   font-size:15px;
-  background:rgba(255,255,255,0.95);
-  box-shadow:0 8px 25px rgba(0,0,0,0.12);
+  background:#f8fafc;
 }
 
-#login button{
+.login-box input:focus{
+  border-color:#3b82f6;
+  box-shadow:0 0 0 4px rgba(59,130,246,0.12);
+}
+
+.login-box button{
   width:100%;
-  max-width:360px;
   padding:14px;
   border:none;
   border-radius:14px;
   background:linear-gradient(90deg,#22c55e,#16a34a);
   color:white;
   font-size:16px;
-  font-weight:600;
+  font-weight:700;
   cursor:pointer;
   transition:0.3s;
-  box-shadow:0 10px 25px rgba(0,0,0,0.18);
 }
 
-#login button:hover{
+.login-box button:hover{
   transform:translateY(-2px);
-  opacity:0.95;
+}
+
+.troca-tela{
+  margin-top:16px;
+  text-align:center;
+  color:#475569;
+}
+
+.troca-tela span{
+  color:#2563eb;
+  font-weight:700;
+  cursor:pointer;
 }
 
 /* APP */
@@ -156,7 +182,6 @@ body{
   gap:24px;
 }
 
-/* CARD - TRILHA DE APRENDIZAGEM */
 .card{
   background:linear-gradient(180deg,#ffffff,#f8fafc);
   border-radius:22px;
@@ -185,8 +210,8 @@ body{
   box-shadow:0 18px 40px rgba(15,23,42,0.12);
 }
 
-.card h3{
-  font-size:22px;
+.card h2{
+  font-size:24px;
   color:#0f172a;
   margin-bottom:10px;
 }
@@ -195,21 +220,46 @@ body{
   color:#475569;
   font-size:15px;
   line-height:1.6;
-  margin-bottom:16px;
+  margin-bottom:10px;
 }
 
-/* VÍDEO */
-.card iframe{
+.modulo{
+  margin-top:20px;
+  padding:16px;
+  background:#eff6ff;
+  border-radius:16px;
+  border-left:5px solid #2563eb;
+}
+
+.modulo h3{
+  color:#1d4ed8;
+  margin-bottom:12px;
+}
+
+.materia{
+  margin-top:14px;
+  padding:16px;
+  background:#ffffff;
+  border:1px solid #dbeafe;
+  border-radius:16px;
+}
+
+.materia h4{
+  font-size:18px;
+  color:#0f172a;
+  margin-bottom:8px;
+}
+
+.materia iframe{
   width:100%;
   height:210px;
   border:none;
   border-radius:16px;
-  margin-bottom:16px;
+  margin:14px 0;
   background:#cbd5e1;
 }
 
-/* BOTÃO DO CURSO */
-.card button{
+.materia button{
   width:100%;
   padding:14px;
   border:none;
@@ -222,9 +272,8 @@ body{
   transition:0.3s;
 }
 
-.card button:hover{
+.materia button:hover{
   transform:scale(1.02);
-  opacity:0.96;
 }
 
 /* PERFIL */
@@ -242,7 +291,6 @@ body{
   color:#0f172a;
 }
 
-/* CAMPOS DE SENHA */
 #perfil input{
   width:100%;
   max-width:420px;
@@ -254,7 +302,6 @@ body{
   outline:none;
   font-size:15px;
   background:#f8fafc;
-  transition:0.3s;
 }
 
 #perfil input:focus{
@@ -262,7 +309,6 @@ body{
   box-shadow:0 0 0 4px rgba(59,130,246,0.12);
 }
 
-/* BOTÃO ALTERAR SENHA */
 #perfil button{
   padding:14px 20px;
   border:none;
@@ -272,11 +318,6 @@ body{
   font-size:15px;
   font-weight:700;
   cursor:pointer;
-  transition:0.3s;
-}
-
-#perfil button:hover{
-  transform:translateY(-2px);
 }
 
 /* RESPONSIVO */
@@ -308,8 +349,9 @@ body{
 }
 
 @media(max-width:600px){
-  #login h2{
-    font-size:26px;
+  .login-box{
+    padding:24px;
+    border-radius:18px;
   }
 
   #menu,
@@ -323,11 +365,7 @@ body{
     padding:18px;
   }
 
-  .card h3{
-    font-size:19px;
-  }
-
-  .card iframe{
+  .materia iframe{
     height:190px;
   }
 }
