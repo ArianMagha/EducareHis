@@ -21,7 +21,9 @@
       <h2>Cadastro</h2>
       <input id="nomeCadastro" type="text" placeholder="Nome">
       <input id="emailCadastro" type="email" placeholder="E-mail">
-      <button onclick="cadastrar()">Solicitar</button>
+      <input id="senhaCadastro" type="password" placeholder="Crie uma senha">
+      <input id="confirmarSenhaCadastro" type="password" placeholder="Confirme a senha">
+      <button onclick="cadastrar()">Cadastrar</button>
       <button class="secondaryBtn" onclick="voltarLogin()" style="width:100%; margin-top:10px;">Voltar</button>
     </div>
   </div>
@@ -49,6 +51,11 @@
           <h2>Perfil</h2>
           <p id="nomeUser"></p>
           <p id="emailUser"></p>
+
+          <h3 style="margin-top:20px;">Alterar senha</h3>
+          <input id="novaSenha" type="password" placeholder="Nova senha" style="width:100%; padding:12px; margin-top:10px; border:1px solid #d1d5db; border-radius:10px;">
+          <input id="confirmarNovaSenha" type="password" placeholder="Confirmar nova senha" style="width:100%; padding:12px; margin-top:10px; border:1px solid #d1d5db; border-radius:10px;">
+          <button class="primaryBtn" onclick="alterarSenha()" style="margin-top:10px;">Salvar nova senha</button>
         </div>
       </div>
     </main>
