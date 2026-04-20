@@ -19,37 +19,112 @@ function voltarLogin() {
 async function cadastrar() {
   const nome = document.getElementById("nomeCadastro").value.trim();
   const email = document.getElementById("emailCadastro").value.trim().toLowerCase();
+  const senha = document.getElementById("senhaCadastro").value.trim();
+  const confirmarSenha = document.getElementById("confirmarSenhaCadastro").value.trim();
 
-  if (!nome || !email) {
-    alert("Preencha nome e e-mail para solicitar cadastro.");
+  if (!nome || !email || !senha || !confirmarSenha) {
+    alert("Preencha nome, e-mail e senha para cadastrar.");
     return;
   }
 
-  const senhaTemporaria = Math.random().toString(36).slice(-10) + "A1!";
+  if (senha.length < 6) {
+    alert("A senha deve ter no mínimo 6 caracteres.");
+    return;
+  }
+
+  if (senha !== confirmarSenha) {
+    alert("A confirmação de senha não confere.");
+    return;
+  }
+
   const { data, error } = await supabaseClient.auth.signUp({
     email,
-    password: senhaTemporaria,
-    options: { data: { nome } }
+    password: senha,
+    options: {
+      data: { nome },
+      emailRedirectTo: window.location.href
+    }
   });
 
   if (error) {
-    alert("Erro ao solicitar cadastro: " + error.message);
+    alert("Erro ao cadastrar: " + error.message);
     return;
   }
 
   if (data?.user) {
-    await supabaseClient.from("profiles").upsert({
+    const { error: profileError } = await supabaseClient.from("profiles").upsert({
       id: data.user.id,
       nome,
       email,
       progresso: 0,
       cursos_concluidos: 0
     });
+
+    if (profileError) {
+      alert("Cadastro criado, mas houve erro ao salvar perfil: " + profileError.message);
+      return;
+    }
   }
 
-  alert("Solicitação enviada! Verifique seu e-mail para confirmar a conta.");
+  if (!data?.session) {
+    alert("Cadastro criado! Confira seu e-mail para confirmar a conta antes de entrar.");
+  } else {
+    alert("Cadastro realizado com sucesso! Você já pode entrar.");
+  }
+
   voltarLogin();
 }
+
+async function recuperarSenha() {
+  const email = document.getElementById("email").value.trim().toLowerCase();
+
+  if (!email) {
+    alert("Digite seu e-mail no campo de login para recuperar a senha.");
+    return;
+  }
+
+  const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.href
+  });
+
+  if (error) {
+    alert("Não foi possível enviar recuperação de senha: " + error.message);
+    return;
+  }
+
+  alert("Enviamos um link de recuperação para seu e-mail.");
+}
+
+async function alterarSenha() {
+  const novaSenha = document.getElementById("novaSenha").value.trim();
+  const confirmarNovaSenha = document.getElementById("confirmarNovaSenha").value.trim();
+
+  if (!novaSenha || !confirmarNovaSenha) {
+    alert("Preencha os dois campos para alterar a senha.");
+    return;
+  }
+
+  if (novaSenha.length < 6) {
+    alert("A nova senha deve ter no mínimo 6 caracteres.");
+    return;
+  }
+
+  if (novaSenha !== confirmarNovaSenha) {
+    alert("A confirmação da nova senha não confere.");
+    return;
+  }
+
+  const { error } = await supabaseClient.auth.updateUser({ password: novaSenha });
+  if (error) {
+    alert("Não foi possível alterar a senha: " + error.message);
+    return;
+  }
+
+  document.getElementById("novaSenha").value = "";
+  document.getElementById("confirmarNovaSenha").value = "";
+  alert("Senha alterada com sucesso!");
+}
+
 async function carregarBanco() {
   const res = await fetch("db.json");
   db = await res.json();
@@ -59,8 +134,23 @@ async function carregarBanco() {
 async function login() {
   const email = document.getElementById("email").value.trim().toLowerCase();
   const senha = document.getElementById("senha").value.trim();
+
+  if (!email || !senha) {
+    alert("Informe e-mail e senha para entrar.");
+    return;
+  }
+
   const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password: senha });
-  if (error) return alert("Erro: " + error.message);
+
+  if (error) {
+    if (error.message?.toLowerCase().includes("invalid login credentials")) {
+      alert("Credenciais inválidas. Se você acabou de cadastrar, confirme o e-mail primeiro ou use 'Esqueci minha senha'.");
+      return;
+    }
+
+    return alert("Erro: " + error.message);
+  }
+
   await carregarUsuarioLogado(data.user);
   iniciarApp();
 }
