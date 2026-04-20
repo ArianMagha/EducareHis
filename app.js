@@ -5,6 +5,51 @@ const SUPABASE_URL = "https://enkwyjpiyfvseooczpzd.supabase.co";
 const SUPABASE_KEY = "sb_publishable_1HjiNJRF1_0STvMiCP0DZA_TAwVblIR";
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+
+function mostrarCadastro() {
+  document.getElementById("telaLogin").style.display = "none";
+  document.getElementById("telaCadastro").style.display = "block";
+}
+
+function voltarLogin() {
+  document.getElementById("telaCadastro").style.display = "none";
+  document.getElementById("telaLogin").style.display = "block";
+}
+
+async function cadastrar() {
+  const nome = document.getElementById("nomeCadastro").value.trim();
+  const email = document.getElementById("emailCadastro").value.trim().toLowerCase();
+
+  if (!nome || !email) {
+    alert("Preencha nome e e-mail para solicitar cadastro.");
+    return;
+  }
+
+  const senhaTemporaria = Math.random().toString(36).slice(-10) + "A1!";
+  const { data, error } = await supabaseClient.auth.signUp({
+    email,
+    password: senhaTemporaria,
+    options: { data: { nome } }
+  });
+
+  if (error) {
+    alert("Erro ao solicitar cadastro: " + error.message);
+    return;
+  }
+
+  if (data?.user) {
+    await supabaseClient.from("profiles").upsert({
+      id: data.user.id,
+      nome,
+      email,
+      progresso: 0,
+      cursos_concluidos: 0
+    });
+  }
+
+  alert("Solicitação enviada! Verifique seu e-mail para confirmar a conta.");
+  voltarLogin();
+}
 async function carregarBanco() {
   const res = await fetch("db.json");
   db = await res.json();
@@ -93,10 +138,16 @@ function mostrarAtividade(cId, mId, matId) {
   const curso = db.cursos.find(c => c.id === cId);
   const modulo = curso.modulos.find(m => m.id === mId);
   const materia = modulo.materias.find(ma => ma.id === matId);
-  const quiz = materia.atividades[0];
+  const quiz = materia?.atividades?.[0];
 
   const box = document.getElementById("boxQuiz");
   box.style.display = "block";
+
+  if (!quiz) {
+    box.innerHTML = "<p>Esta aula ainda não possui atividade cadastrada.</p>";
+    return;
+  }
+
   box.innerHTML = `
     <h3>Atividade de Fixação</h3>
     <p style="margin:10px 0;">${quiz.pergunta}</p>
