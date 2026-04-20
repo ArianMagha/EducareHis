@@ -1,38 +1,118 @@
 {
-  "usuarios": [
-    {
-      "id": 1,
-      "nome": "Adrian",
-      "email": "admin@admin.com",
-      "senha": "123456",
-      "progresso": 30,
-      "cursosConcluidos": 1
-    }
-  ],
   "cursos": [
     {
       "id": 1,
       "titulo": "Introdução à História",
-      "descricao": "Fundamentos da História Moderna",
-      "video": "https://www.youtube.com/embed/8J4Z3n4Zz3M",
-      "atividades": [
+      "descricao": "Fundamentos da História Moderna e compreensão dos processos históricos.",
+      "modulos": [
         {
-          "pergunta": "O que estuda a História?",
-          "opcoes": ["Passado humano", "Matemática", "Física"],
-          "resposta": 0
+          "id": 1,
+          "nome": "Módulo 1 - Fundamentos da História",
+          "materias": [
+            {
+              "id": 1,
+              "titulo": "O que é História?",
+              "descricao": "Entendimento inicial sobre o estudo da História.",
+              "video": "https://www.youtube.com/embed/8J4Z3n4Zz3M",
+              "atividades": [
+                {
+                  "pergunta": "O que estuda a História?",
+                  "opcoes": ["Passado humano", "Matemática", "Física"],
+                  "resposta": 0
+                }
+              ]
+            },
+            {
+              "id": 2,
+              "titulo": "Tempo histórico",
+              "descricao": "Noções de tempo, cronologia e periodização histórica.",
+              "video": "https://www.youtube.com/embed/8J4Z3n4Zz3M",
+              "atividades": [
+                {
+                  "pergunta": "O tempo histórico está relacionado a quê?",
+                  "opcoes": ["À experiência humana no tempo", "Somente ao relógio", "A cálculos matemáticos"],
+                  "resposta": 0
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "nome": "Módulo 2 - História Moderna",
+          "materias": [
+            {
+              "id": 3,
+              "titulo": "Renascimento Cultural",
+              "descricao": "Introdução ao Renascimento e suas transformações.",
+              "video": "https://www.youtube.com/embed/8J4Z3n4Zz3M",
+              "atividades": [
+                {
+                  "pergunta": "O Renascimento valorizava principalmente:",
+                  "opcoes": ["O humanismo", "A física quântica", "A robótica"],
+                  "resposta": 0
+                }
+              ]
+            }
+          ]
         }
       ]
     },
     {
       "id": 2,
       "titulo": "Sociologia Básica",
-      "descricao": "Introdução à sociedade e cultura",
-      "video": "https://www.youtube.com/embed/VIDEO_ID",
-      "atividades": [
+      "descricao": "Introdução aos conceitos de sociedade, cultura e relações sociais.",
+      "modulos": [
         {
-          "pergunta": "Quem é considerado pai da Sociologia?",
-          "opcoes": ["Durkheim", "Newton", "Darwin"],
-          "resposta": 0
+          "id": 1,
+          "nome": "Módulo 1 - Introdução à Sociologia",
+          "materias": [
+            {
+              "id": 1,
+              "titulo": "O que é Sociologia?",
+              "descricao": "Primeiros conceitos sobre sociedade e convivência humana.",
+              "video": "https://www.youtube.com/embed/VIDEO_ID",
+              "atividades": [
+                {
+                  "pergunta": "Quem é considerado pai da Sociologia?",
+                  "opcoes": ["Durkheim", "Newton", "Darwin"],
+                  "resposta": 0
+                }
+              ]
+            },
+            {
+              "id": 2,
+              "titulo": "Cultura e sociedade",
+              "descricao": "Relações entre cultura, costumes e organização social.",
+              "video": "https://www.youtube.com/embed/VIDEO_ID",
+              "atividades": [
+                {
+                  "pergunta": "A cultura influencia:",
+                  "opcoes": ["Comportamentos e valores sociais", "Somente a biologia", "A gravidade"],
+                  "resposta": 0
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "nome": "Módulo 2 - Pensadores Clássicos",
+          "materias": [
+            {
+              "id": 3,
+              "titulo": "Émile Durkheim",
+              "descricao": "Introdução às ideias de Durkheim sobre fato social.",
+              "video": "https://www.youtube.com/embed/VIDEO_ID",
+              "atividades": [
+                {
+                  "pergunta": "Durkheim estudava principalmente:",
+                  "opcoes": ["Os fatos sociais", "Os planetas", "As reações químicas"],
+                  "resposta": 0
+                }
+              ]
+            }
+          ]
         }
       ]
     }
