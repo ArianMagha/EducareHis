@@ -2,16 +2,13 @@ let db = { cursos: [] };
 let usuarioLogado = null;
 
 // =========================
-// SUPABASE
+// CONFIGURAÇÃO SUPABASE
 // =========================
 const SUPABASE_URL = "https://enkwyjpiyfvseooczpzd.supabase.co";
 const SUPABASE_KEY = "sb_publishable_1HjiNJRF1_0STvMiCP0DZA_TAwVblIR";
-
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// =========================
-// CARREGAR CURSOS
-// =========================
+// Carregar o JSON de cursos
 async function carregarBanco() {
   try {
     const res = await fetch("db.json");
@@ -23,7 +20,7 @@ async function carregarBanco() {
 }
 
 // =========================
-// TELAS LOGIN/CADASTRO
+// AUTENTICAÇÃO E TELAS
 // =========================
 function mostrarCadastro() {
   document.getElementById("telaLogin").style.display = "none";
@@ -35,77 +32,36 @@ function voltarLogin() {
   document.getElementById("telaLogin").style.display = "block";
 }
 
-// =========================
-// SOLICITAR CADASTRO
-// =========================
 async function cadastrar() {
   const nome = document.getElementById("nomeCadastro").value.trim();
   const email = document.getElementById("emailCadastro").value.trim().toLowerCase();
 
-  if (!nome || !email) {
-    alert("Preencha nome e email");
-    return;
-  }
+  if (!nome || !email) { alert("Preencha nome e email"); return; }
 
-  const { error } = await supabaseClient
-    .from("solicitacoes_cadastro")
-    .insert([
-      {
-        nome: nome,
-        email: email,
-        status: "pendente"
-      }
-    ]);
+  const { error } = await supabaseClient.from("solicitacoes_cadastro").insert([
+    { nome: nome, email: email, status: "pendente" }
+  ]);
 
-  if (error) {
-    alert("Erro ao enviar solicitação: " + error.message);
-    return;
-  }
+  if (error) { alert("Erro: " + error.message); return; }
 
-  alert("Solicitação enviada com sucesso! Aguarde sua aprovação.");
-  document.getElementById("nomeCadastro").value = "";
-  document.getElementById("emailCadastro").value = "";
+  alert("Solicitação enviada! Aguarde aprovação.");
   voltarLogin();
 }
 
-// =========================
-// LOGIN
-// =========================
 async function login() {
   const email = document.getElementById("email").value.trim().toLowerCase();
   const senha = document.getElementById("senha").value.trim();
 
-  if (!email || !senha) {
-    alert("Preencha email e senha");
-    return;
-  }
+  if (!email || !senha) { alert("Preencha todos os campos"); return; }
 
-  const { data, error } = await supabaseClient.auth.signInWithPassword({
-    email,
-    password: senha
-  });
+  const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password: senha });
 
-  if (error) {
-    alert("Login inválido: " + error.message);
-    return;
-  }
+  if (error) { alert("Login inválido: " + error.message); return; }
 
   await carregarUsuarioLogado(data.user);
-
-  if (usuarioLogado) {
-    iniciarApp();
-
-    if (usuarioLogado.primeiroAcesso) {
-      mostrar("perfil");
-      bloquearPrimeiroAcesso();
-      alert("No primeiro acesso é obrigatório alterar a senha.");
-    }
-  }
+  if (usuarioLogado) iniciarApp();
 }
 
-// =========================
-// CARREGAR PERFIL
-// =========================
 async function carregarUsuarioLogado(userAuth) {
   const { data, error } = await supabaseClient
     .from("profiles")
@@ -113,11 +69,7 @@ async function carregarUsuarioLogado(userAuth) {
     .eq("id", userAuth.id)
     .single();
 
-  if (error) {
-    console.error("Erro ao buscar perfil:", error);
-    alert("Erro ao carregar perfil do usuário.");
-    return;
-  }
+  if (error) return;
 
   usuarioLogado = {
     id: data.id,
@@ -130,7 +82,7 @@ async function carregarUsuarioLogado(userAuth) {
 }
 
 // =========================
-// INICIAR APP
+// CORE DO SISTEMA (AQUI ESTÁ A MÁGICA)
 // =========================
 function iniciarApp() {
   document.getElementById("login").style.display = "none";
@@ -140,249 +92,146 @@ function iniciarApp() {
   document.getElementById("emailUser").innerText = usuarioLogado.email;
 
   atualizarDashboard();
-  carregarCursos();
+  renderizarListaCursos(); // Nova função para o estilo de cards
 
   if (usuarioLogado.primeiroAcesso) {
     mostrar("perfil");
-    bloquearPrimeiroAcesso();
+    document.getElementById("avisoPrimeiroAcesso").style.display = "block";
   } else {
-    liberarSistema();
     mostrar("menu");
   }
 }
 
-// =========================
-// BLOQUEIO DE PRIMEIRO ACESSO
-// =========================
-function bloquearPrimeiroAcesso() {
-  document.getElementById("avisoPrimeiroAcesso").style.display = "block";
-}
-
-function liberarSistema() {
-  document.getElementById("avisoPrimeiroAcesso").style.display = "none";
-}
-
-// =========================
-// DASHBOARD
-// =========================
-function atualizarDashboard() {
-  document.getElementById("progresso").innerText =
-    "Progresso: " + usuarioLogado.progresso + "%";
-
-  document.getElementById("concluidos").innerText =
-    "Cursos concluídos: " + usuarioLogado.cursosConcluidos;
-}
-
-// =========================
-// CURSOS EM TRILHA
-// =========================
-function carregarCursos() {
+// 1. Renderiza os Cards dos Cursos
+function renderizarListaCursos() {
   const div = document.getElementById("cursos");
-  div.innerHTML = "";
-
-  if (!db.cursos || db.cursos.length === 0) {
-    div.innerHTML = "<p>Nenhum curso encontrado.</p>";
-    return;
-  }
+  div.innerHTML = `<h2 class="sectionTitle">Seus Cursos</h2><div class="dashboardGrid" id="gridCursos"></div>`;
+  const grid = document.getElementById("gridCursos");
 
   db.cursos.forEach(curso => {
-    let html = `
-      <div class="card">
-        <h2>${curso.titulo}</h2>
-        <p>${curso.descricao}</p>
+    const card = document.createElement("div");
+    card.className = "card dashboardCard";
+    card.style.cursor = "pointer";
+    card.onclick = () => carregarTrilhasDoCurso(curso.id);
+    card.innerHTML = `
+      <span class="badge">Curso</span>
+      <h3>${curso.titulo}</h3>
+      <p>${curso.descricao}</p>
+      <button class="primaryBtn" style="margin-top:15px; width:100%">Abrir Conteúdo</button>
     `;
-
-    curso.modulos.forEach(modulo => {
-      html += `
-        <div class="modulo">
-          <h3>${modulo.nome}</h3>
-      `;
-
-      modulo.materias.forEach(materia => {
-        html += `
-          <div class="materia">
-            <h4>${materia.titulo}</h4>
-            <p>${materia.descricao}</p>
-            <iframe src="${materia.video}" allowfullscreen></iframe>
-            <button onclick="fazerAtividade(${curso.id}, ${modulo.id}, ${materia.id})">
-              Fazer Atividade
-            </button>
-          </div>
-        `;
-      });
-
-      html += `</div>`;
-    });
-
-    html += `</div>`;
-    div.innerHTML += html;
+    grid.appendChild(card);
   });
 }
 
-// =========================
-// ATIVIDADE
-// =========================
-async function fazerAtividade(cursoId, moduloId, materiaId) {
-  if (usuarioLogado.primeiroAcesso) {
-    alert("Antes de continuar, altere sua senha no perfil.");
-    mostrar("perfil");
-    return;
-  }
+// 2. Renderiza os Módulos (Trilhas) dentro do curso selecionado
+function carregarTrilhasDoCurso(cursoId) {
+  const curso = db.cursos.find(c => c.id === cursoId);
+  const div = document.getElementById("cursos");
+  
+  // Criar interface de trilhas
+  div.innerHTML = `
+    <button class="secondaryBtn" onclick="renderizarListaCursos()" style="margin-bottom:20px;">← Voltar para cursos</button>
+    <h2 class="sectionTitle">${curso.titulo}</h2>
+    <div class="layout">
+      <div id="visualizadorAula" class="leftPanel">
+         <div class="card contentCard">Selecione uma aula na trilha ao lado para começar a estudar.</div>
+      </div>
+      <div class="rightPanel" id="listaModulos"></div>
+    </div>
+  `;
 
-  const curso = db.cursos.find(c => c.id == cursoId);
-  if (!curso) return;
+  const painelModulos = document.getElementById("listaModulos");
 
-  const modulo = curso.modulos.find(m => m.id == moduloId);
-  if (!modulo) return;
+  curso.modulos.forEach((modulo, index) => {
+    const item = document.createElement("div");
+    item.className = "trailItem";
+    item.innerHTML = `
+      <div class="trailHeader" onclick="toggleElement('mod-cont-${index}')">
+        <div class="trailTitle">${modulo.nome}</div>
+        <div class="trailMeta">${modulo.materias.length} aulas</div>
+      </div>
+      <div id="mod-cont-${index}" class="trailLessons" style="display:none;">
+        ${modulo.materias.map(m => `
+          <div class="lessonItem" onclick="abrirAula(${curso.id}, ${modulo.id}, ${m.id})">
+            <div class="lessonTitle">${m.titulo}</div>
+            <div class="lessonMeta">Vídeo aula</div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+    painelModulos.appendChild(item);
+  });
+}
 
-  const materia = modulo.materias.find(m => m.id == materiaId);
-  if (!materia || !materia.atividades || materia.atividades.length === 0) {
-    alert("Esta matéria não possui atividade.");
-    return;
-  }
+// 3. Abre a aula e o vídeo
+function abrirAula(cursoId, moduloId, materiaId) {
+  const curso = db.cursos.find(c => c.id === cursoId);
+  const modulo = curso.modulos.find(m => m.id === moduloId);
+  const materia = modulo.materias.find(m => m.id === materiaId);
 
-  const atividade = materia.atividades[0];
+  const visualizador = document.getElementById("visualizadorAula");
+  visualizador.innerHTML = `
+    <div class="card videoCard">
+      <div class="videoWrapper">
+        <iframe src="${materia.video}" allowfullscreen></iframe>
+      </div>
+    </div>
+    <div class="card contentCard">
+      <h2>${materia.titulo}</h2>
+      <p class="contentText">${materia.descricao}</p>
+      <div class="actionRow">
+        <button class="primaryBtn" onclick="fazerAtividade(${cursoId}, ${moduloId}, ${materiaId})">Fazer Atividade</button>
+      </div>
+    </div>
+  `;
+}
 
-  let resposta = prompt(
-    atividade.pergunta + "\n" +
-    atividade.opcoes.map((o, i) => `${i} - ${o}`).join("\n")
-  );
-
-  if (resposta == atividade.resposta) {
-    alert("Correto!");
-
-    usuarioLogado.progresso += 5;
-    usuarioLogado.cursosConcluidos += 1;
-
-    const { error } = await supabaseClient
-      .from("profiles")
-      .update({
-        progresso: usuarioLogado.progresso,
-        cursos_concluidos: usuarioLogado.cursosConcluidos
-      })
-      .eq("id", usuarioLogado.id);
-
-    if (error) {
-      alert("Erro ao salvar progresso: " + error.message);
-      return;
-    }
-
-    atualizarDashboard();
-  } else {
-    alert("Errado");
-  }
+function toggleElement(id) {
+  const el = document.getElementById(id);
+  el.style.display = el.style.display === "none" ? "block" : "none";
 }
 
 // =========================
-// MENU
+// ATIVIDADES E DASHBOARD
 // =========================
-function mostrar(sec) {
-  if (usuarioLogado && usuarioLogado.primeiroAcesso && sec !== "perfil") {
-    alert("No primeiro acesso você precisa alterar sua senha.");
-    sec = "perfil";
+async function fazerAtividade(cId, mId, matId) {
+  const curso = db.cursos.find(c => c.id === cId);
+  const materia = curso.modulos.find(m => m.id === mId).materias.find(ma => ma.id === matId);
+  const atividade = materia.atividades[0];
+
+  let resp = prompt(atividade.pergunta + "\n" + atividade.opcoes.map((o, i) => `${i}: ${o}`).join("\n"));
+
+  if (resp == atividade.resposta) {
+    alert("Excelente! Você acertou.");
+    usuarioLogado.progresso += 2;
+    await supabaseClient.from("profiles").update({ progresso: usuarioLogado.progresso }).eq("id", usuarioLogado.id);
+    atualizarDashboard();
+  } else {
+    alert("Resposta incorreta, revise o vídeo!");
   }
+}
 
-  document.getElementById("menu").style.display = "none";
-  document.getElementById("cursos").style.display = "none";
-  document.getElementById("perfil").style.display = "none";
+function atualizarDashboard() {
+  document.getElementById("progresso").innerText = usuarioLogado.progresso + "%";
+  document.getElementById("concluidos").innerText = usuarioLogado.cursosConcluidos;
+}
 
+function mostrar(sec) {
+  const telas = ["menu", "cursos", "perfil"];
+  telas.forEach(t => document.getElementById(t).style.display = "none");
   document.getElementById(sec).style.display = "block";
 }
 
-// =========================
-// ALTERAR SENHA
-// =========================
-async function alterarSenha() {
-  const senhaAtual = document.getElementById("senhaAtual").value.trim();
-  const novaSenha = document.getElementById("novaSenha").value.trim();
-  const confirmarSenha = document.getElementById("confirmarSenha").value.trim();
-
-  if (!senhaAtual || !novaSenha || !confirmarSenha) {
-    alert("Preencha todos os campos");
-    return;
-  }
-
-  if (novaSenha.length < 6) {
-    alert("A nova senha deve ter pelo menos 6 caracteres");
-    return;
-  }
-
-  if (novaSenha !== confirmarSenha) {
-    alert("As senhas não coincidem");
-    return;
-  }
-
-  const { error: loginError } = await supabaseClient.auth.signInWithPassword({
-    email: usuarioLogado.email,
-    password: senhaAtual
-  });
-
-  if (loginError) {
-    alert("Senha atual incorreta");
-    return;
-  }
-
-  const { error: updateError } = await supabaseClient.auth.updateUser({
-    password: novaSenha
-  });
-
-  if (updateError) {
-    alert("Erro ao alterar senha: " + updateError.message);
-    return;
-  }
-
-  if (usuarioLogado.primeiroAcesso) {
-    const { error: profileError } = await supabaseClient
-      .from("profiles")
-      .update({
-        primeiro_acesso: false
-      })
-      .eq("id", usuarioLogado.id);
-
-    if (profileError) {
-      alert("Senha alterada, mas houve erro ao liberar acesso: " + profileError.message);
-      return;
-    }
-
-    usuarioLogado.primeiroAcesso = false;
-    liberarSistema();
-  }
-
-  alert("Senha alterada com sucesso!");
-
-  document.getElementById("senhaAtual").value = "";
-  document.getElementById("novaSenha").value = "";
-  document.getElementById("confirmarSenha").value = "";
-
-  mostrar("menu");
-}
-
-// =========================
-// LOGOUT
-// =========================
 async function logout() {
   await supabaseClient.auth.signOut();
-  usuarioLogado = null;
   location.reload();
 }
 
-// =========================
-// AUTO LOGIN
-// =========================
 window.onload = async () => {
   await carregarBanco();
-
-  const { data, error } = await supabaseClient.auth.getSession();
-
-  if (error) {
-    console.error("Erro ao recuperar sessão:", error);
-    return;
-  }
-
-  if (data.session && data.session.user) {
+  const { data } = await supabaseClient.auth.getSession();
+  if (data?.session) {
     await carregarUsuarioLogado(data.session.user);
-    if (usuarioLogado) {
-      iniciarApp();
-    }
+    if (usuarioLogado) iniciarApp();
   }
 };
