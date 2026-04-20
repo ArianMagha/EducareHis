@@ -20,23 +20,22 @@
       <button onclick="login()">Entrar</button>
 
       <p class="troca-tela">
-        Não tem conta?
-        <span onclick="mostrarCadastro()">Criar conta</span>
+        Não tem acesso?
+        <span onclick="mostrarCadastro()">Solicitar cadastro</span>
       </p>
     </div>
 
     <div class="login-box" id="telaCadastro" style="display:none;">
-      <h2>Criar Conta</h2>
-      <p class="subtexto">Cadastre-se para acessar os cursos</p>
+      <h2>Solicitar Cadastro</h2>
+      <p class="subtexto">Envie seus dados para aprovação</p>
 
-      <input id="nomeCadastro" type="text" placeholder="Nome">
+      <input id="nomeCadastro" type="text" placeholder="Nome completo">
       <input id="emailCadastro" type="email" placeholder="Email">
-      <input id="senhaCadastro" type="password" placeholder="Senha">
 
-      <button onclick="cadastrar()">Cadastrar</button>
+      <button onclick="cadastrar()">Enviar solicitação</button>
 
       <p class="troca-tela">
-        Já tem conta?
+        Já tem acesso?
         <span onclick="voltarLogin()">Fazer login</span>
       </p>
     </div>
@@ -67,6 +66,10 @@
         <p><strong>Nome:</strong> <span id="nomeUser"></span></p>
         <p><strong>Email:</strong> <span id="emailUser"></span></p>
 
+        <div id="avisoPrimeiroAcesso" class="aviso-primeiro-acesso" style="display:none;">
+          Primeiro acesso detectado. Você precisa alterar sua senha para continuar.
+        </div>
+
         <h3>Alterar Senha</h3>
         <input id="senhaAtual" type="password" placeholder="Senha atual">
         <input id="novaSenha" type="password" placeholder="Nova senha">
@@ -80,4 +83,4 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="app.js"></script>
 </body>
-</html>
+</html>        
