@@ -18,13 +18,9 @@
                 {
                   "pergunta": "O que estuda a História?",
                   "opcoes": ["Passado humano", "Matemática", "Física"],
-                  "resposta": "Passado humano"
-                    }
-          ]
-        }
-      ]
-    },
-            {
+                  "resposta": 0
+                },
+                {
               "id": 2,
               "titulo": "Tempo histórico",
               "descricao": "Noções de tempo, cronologia e periodização.",
@@ -32,43 +28,36 @@
             }
           ]
         },
-        {
-          "id": 2,
-          "nome": "Módulo 2 - História Moderna",
-          "materias": [
-            {
-              "id": 3,
-              "titulo": "Renascimento Cultural",
-              "descricao": "Introdução ao Renascimento e suas transformações.",
-              "video": "https://www.youtube.com/embed/8J4Z3n4Zz3M",
-              "atividades": [
-                {
-                  "pergunta": "O que estuda a História Moderna?",
-                  "opcoes": ["Passado humano", "O contemporaneo", "Era medieval"],
-                  "resposta": "O contemporaneo"
-                    }
-          ]
-        }
-      ]
-    },
-    {
+         {
       "id": 2,
-      "titulo": "Sociologia Básica",
-      "descricao": "Introdução aos conceitos de sociedade e cultura.",
+      "titulo": "Introdução à História",
+      "descricao": "Fundamentos da História Moderna e processos históricos.",
       "modulos": [
         {
           "id": 1,
-          "nome": "Módulo 1 - Conceitos",
+          "nome": "Módulo 2 - Fundamentos",
           "materias": [
             {
               "id": 1,
-              "titulo": "O que é Sociologia?",
-              "descricao": "Primeiros conceitos sobre sociedade.",
+              "titulo": "O que é História?",
+              "descricao": "Entendimento inicial sobre o estudo da História.",
               "video": "https://www.youtube.com/embed/8J4Z3n4Zz3M"
-            }
+            },
+            {
+              "id": 1,
+              "titulo": "O que é História?",
+              "descricao": "Entendimento inicial sobre o estudo da História.",
+              "video": "https://www.youtube.com/embed/8J4Z3n4Zz3M",
+              "atividades": [
+                {
+                  "pergunta": "O que estuda a História?",
+                  "opcoes": ["Passado humano", "Matemática", "Física"],
+                  "resposta": 0
+                  }
           ]
         }
       ]
     }
   ]
 }
+            
