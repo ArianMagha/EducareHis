@@ -2,19 +2,48 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Plataforma</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
   <div id="login">
-    <h2>Login</h2>
-    <input id="email" type="email" placeholder="Email">
-    <input id="senha" type="password" placeholder="Senha">
-    <button onclick="login()">Entrar</button>
+
+    <div class="login-box" id="telaLogin">
+      <h2>Entrar na Plataforma</h2>
+      <p class="subtexto">Acesse sua trilha de aprendizagem</p>
+
+      <input id="email" type="email" placeholder="Email">
+      <input id="senha" type="password" placeholder="Senha">
+
+      <button onclick="login()">Entrar</button>
+
+      <p class="troca-tela">
+        Não tem conta?
+        <span onclick="mostrarCadastro()">Criar conta</span>
+      </p>
+    </div>
+
+    <div class="login-box" id="telaCadastro" style="display:none;">
+      <h2>Criar Conta</h2>
+      <p class="subtexto">Cadastre-se para acessar os cursos</p>
+
+      <input id="nomeCadastro" type="text" placeholder="Nome">
+      <input id="emailCadastro" type="email" placeholder="Email">
+      <input id="senhaCadastro" type="password" placeholder="Senha">
+
+      <button onclick="cadastrar()">Cadastrar</button>
+
+      <p class="troca-tela">
+        Já tem conta?
+        <span onclick="voltarLogin()">Fazer login</span>
+      </p>
+    </div>
+
   </div>
 
-  <div id="app" style="display:none">
+  <div id="app" style="display:none;">
 
     <div class="sidebar">
       <button onclick="mostrar('menu')">Menu</button>
@@ -31,12 +60,12 @@
         <p id="concluidos"></p>
       </div>
 
-      <div id="cursos" style="display:none"></div>
+      <div id="cursos" style="display:none;"></div>
 
-      <div id="perfil" style="display:none">
+      <div id="perfil" style="display:none;">
         <h2>Perfil</h2>
-        <p id="nomeUser"></p>
-        <p id="emailUser"></p>
+        <p><strong>Nome:</strong> <span id="nomeUser"></span></p>
+        <p><strong>Email:</strong> <span id="emailUser"></span></p>
 
         <h3>Alterar Senha</h3>
         <input id="senhaAtual" type="password" placeholder="Senha atual">
@@ -50,6 +79,5 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="app.js"></script>
-
 </body>
 </html>
