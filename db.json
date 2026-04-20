@@ -13,8 +13,17 @@
               "id": 1,
               "titulo": "O que é História?",
               "descricao": "Entendimento inicial sobre o estudo da História.",
-              "video": "https://www.youtube.com/embed/8J4Z3n4Zz3M"
-            },
+              "video": "https://www.youtube.com/embed/8J4Z3n4Zz3M",
+              "atividades": [
+                {
+                  "pergunta": "O que estuda a História?",
+                  "opcoes": ["Passado humano", "Matemática", "Física"],
+                  "resposta": "Passado humano"
+                    }
+          ]
+        }
+      ]
+    },
             {
               "id": 2,
               "titulo": "Tempo histórico",
@@ -31,8 +40,13 @@
               "id": 3,
               "titulo": "Renascimento Cultural",
               "descricao": "Introdução ao Renascimento e suas transformações.",
-              "video": "https://www.youtube.com/embed/8J4Z3n4Zz3M"
-            }
+              "video": "https://www.youtube.com/embed/8J4Z3n4Zz3M",
+              "atividades": [
+                {
+                  "pergunta": "O que estuda a História Moderna?",
+                  "opcoes": ["Passado humano", "O contemporaneo", "Era medieval"],
+                  "resposta": "O contemporaneo"
+                    }
           ]
         }
       ]
